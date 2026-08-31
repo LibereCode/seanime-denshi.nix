@@ -10,47 +10,46 @@ then add it to your `environment.systemPackages` or `home.packages`:
 
 ```nix flake.nix
 ## flake.nix
+{
+  description = "Hello World!";
 
-inputs = {
-  ## ... your other inputs
-  seanime-denshi = {
-    url = "github:LibereCode/seanime-denshi.nix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  ## ... your other inputs
+  inputs = {
+    ## ... your other inputs
+
+    seanime-denshi = {
+      url = "github:LibereCode/seanime-denshi.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ## ... your other inputs
   };
 
   ## ... outputs ...
-};
+}
 ```
 
 Another file that is imported into your config:
 
-```nix modules/nixos/seanime-denshi.nix
-## For NixOS
+```nix modules/nixos_or_hm/seanime-denshi.nix
 { inputs, pkgs, ... }:
 let
   system = pkgs.stdenv.hostPlatform.system;
 in
 {
   config = {
+
+    ## For NixOS
     environment.systemPackages = [
       inputs.seanime-denshi.packages.${system}.seanime-denshi
     ];
-  };
-}
-```
 
-```nix modules/nixos/seanime-denshi.nix
-## For Home-manager
-{ inputs, pkgs, ... }:
-let
-  system = pkgs.stdenv.hostPlatform.system;
-in
-  config = {
+    ## For Home-manager
     home.packages = [
       inputs.seanime-denshi.packages.${system}.seanime-denshi
     ];
+
+    ## (Do not do both in the same module)
+
   };
 }
 ```
